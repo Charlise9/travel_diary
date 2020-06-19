@@ -17,6 +17,24 @@ async function newEntry(req, res, next) {
       throw error;
     }
 
+    // Comprobar que no existe una entrada con el mismo place
+    const [existingEntry] = await connection.query(
+      `
+      SELECT id
+      FROM diary
+      WHERE place=?
+      `,
+      [place]
+    );
+
+    if (existingEntry.length > 0) {
+      const error = new Error(
+        "Ya existe una entrada en la base de datos con ese campo place"
+      );
+      error.httpStatus = 409;
+      throw error;
+    }
+
     let savedImageFileName;
     // Procesar la imagen si está en el body
     // sharp, uuid, express-fileupload

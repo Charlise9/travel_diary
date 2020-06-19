@@ -27,7 +27,7 @@ async function listEntries(req, res, next) {
     }
 
     let queryResults;
-    console.log(search);
+
     if (search) {
       queryResults = await connection.query(
         `   
