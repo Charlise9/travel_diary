@@ -31,7 +31,7 @@ async function listEntries(req, res, next) {
     if (search) {
       queryResults = await connection.query(
         `   
-            SELECT diary.id, diary.date, diary.place,
+            SELECT diary.id, diary.date, diary.place, diary.user_id,
               (SELECT AVG(vote) FROM diary_votes WHERE entry_id=diary.id) AS voteAverage
             FROM diary
             WHERE place LIKE ? OR description LIKE ?
@@ -41,7 +41,7 @@ async function listEntries(req, res, next) {
       );
     } else {
       queryResults = await connection.query(
-        `SELECT diary.id, diary.date, diary.place,
+        `SELECT diary.id, diary.date, diary.place, diary.user_id,
           (SELECT AVG(vote) FROM diary_votes WHERE entry_id=diary.id) AS voteAverage
         FROM diary
         ORDER BY ${orderBy} ${orderDirection}`

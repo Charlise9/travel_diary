@@ -18,7 +18,7 @@ async function editEntry(req, res, next) {
     // Seleccionar datos actuales de la entrada
     const [current] = await connection.query(
       `
-    SELECT id, date, description, place, image
+    SELECT id, date, description, place, image, user_id
     FROM diary
     WHERE id=?
   `,
@@ -26,6 +26,12 @@ async function editEntry(req, res, next) {
     );
 
     const [currentEntry] = current;
+
+    if (currentEntry.user_id !== req.auth.id && req.auth.role !== "admin") {
+      const error = new Error("No tienes permisos para editar esta entrada");
+      error.httpStatus = 403;
+      throw error;
+    }
 
     let savedImageFileName;
     // Procesar la imagen si existe

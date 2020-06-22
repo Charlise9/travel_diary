@@ -54,10 +54,10 @@ async function newEntry(req, res, next) {
     // Ejecutar la query
     const [result] = await connection.query(
       `
-          INSERT INTO diary(date, place, description, image, lastUpdate)
-          VALUES(NOW(),?,?,?,NOW())
+          INSERT INTO diary(date, place, description, image, lastUpdate, user_id)
+          VALUES(NOW(),?,?,?,NOW(), ?)
           `,
-      [place, description, savedImageFileName]
+      [place, description, savedImageFileName, req.auth.id]
     );
 
     // Devolver el resultado

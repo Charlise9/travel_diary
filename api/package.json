@@ -15,13 +15,14 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
-    "bcrypt": "^5.0.0",
+    "@sendgrid/mail": "^7.2.0",
     "body-parser": "^1.19.0",
     "date-fns": "^2.14.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
     "faker": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
