@@ -20,16 +20,22 @@ async function loginUser(req, res, next) {
     // Seleccionar el usuario de la base de datos y comprobar que las passwords coinciden
     const [dbUser] = await connection.query(
       `
-        SELECT id, email, role
+        SELECT id, role, active
         FROM users
-        WHERE email=? AND password=SHA2(?, 512)
+        WHERE email=? AND password=SHA2(?, 512) 
       `,
       [email, password]
     );
 
     if (dbUser.length === 0) {
       const error = new Error(
-        "No hay ningún usuario registrado con ese email o la password es incorrecta."
+        "No hay ningún usuario registrado activo con ese email o la password es incorrecta."
+      );
+      error.httpStatus = 401;
+      throw error;
+    } else if (!dbUser[0].active) {
+      const error = new Error(
+        "El usuario está registrado pero no activado. Por favor revisa tu email y actívalo"
       );
       error.httpStatus = 401;
       throw error;

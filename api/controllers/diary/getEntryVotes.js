@@ -12,7 +12,7 @@ async function getEntryVotes(req, res, next) {
 
     const [votes] = await connection.query(
       `
-      SELECT vote, date, ip
+      SELECT vote, date, user_id
       FROM diary_votes
       WHERE entry_id=?
       `,

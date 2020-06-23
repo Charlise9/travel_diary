@@ -8,7 +8,6 @@ async function voteEntry(req, res, next) {
     const { id } = req.params;
     const { vote } = req.body;
 
-    const userIP = req.ip;
     const userVote = parseInt(vote);
 
     // Comprobar que el voto es correcto
@@ -28,19 +27,19 @@ async function voteEntry(req, res, next) {
       [id]
     );
 
-    // Comprobar que no hay ningún voto previo con mi ip
+    // Comprobar que no hay ningún voto previo con mi usuario
     const [existingVote] = await connection.query(
       `
       SELECT id
       FROM diary_votes
-      WHERE entry_id=? AND ip=?
+      WHERE entry_id=? AND user_id=?
       `,
-      [id, userIP]
+      [id, req.auth.id]
     );
 
     if (existingVote.length > 0) {
       const error = new Error(
-        `Ya votaste la entrada ${entry[0].place} desde tu IP`
+        `Ya votaste la entrada ${entry[0].place} con tu usuario`
       );
       error.httpStatus = 403;
       throw error;
@@ -49,10 +48,10 @@ async function voteEntry(req, res, next) {
     // Guardar el voto en la base de datos
     await connection.query(
       `
-      INSERT INTO diary_votes(entry_id, vote, date, ip, lastUpdate)
+      INSERT INTO diary_votes(entry_id, vote, date, user_id, lastUpdate)
       VALUES(?,?, NOW(),?,NOW())
       `,
-      [id, userVote, userIP]
+      [id, userVote, req.auth.id]
     );
 
     res.send({

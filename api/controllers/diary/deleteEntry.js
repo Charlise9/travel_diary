@@ -11,12 +11,18 @@ async function deleteEntry(req, res, next) {
     // Comprobar que existe esa id y si no dar error404
     const [current] = await connection.query(
       `
-      SELECT image
+      SELECT user_id, image
       FROM diary
       WHERE id=?
       `,
       [id]
     );
+
+    if (current[0].user_id !== req.auth.id && req.auth.role !== "admin") {
+      const error = new Error("No tienes permisos para editar esta entrada");
+      error.httpStatus = 403;
+      throw error;
+    }
 
     // Si la entrada tiene imagen asociada borrarla
     if (current[0].image) {

@@ -7,6 +7,7 @@ const fileUpload = require("express-fileupload");
 
 const entryExists = require("./middlewares/entryExists");
 const isUser = require("./middlewares/isUser");
+const isAdmin = require("./middlewares/isAdmin");
 
 // Content controllers
 const listEntries = require("./controllers/diary/listEntries");
@@ -21,6 +22,9 @@ const getEntryVotes = require("./controllers/diary/getEntryVotes");
 const newUser = require("./controllers/users/newUser");
 const validateUser = require("./controllers/users/validateUser");
 const loginUser = require("./controllers/users/loginUser");
+const getUser = require("./controllers/users/getUser");
+const editUser = require("./controllers/users/editUser");
+const deleteUser = require("./controllers/users/deleteUser");
 
 const app = express();
 
@@ -41,30 +45,30 @@ app.use(fileUpload());
 // Público
 app.get("/entries", listEntries); // Esto es un endpoint
 
-// Mostrar una sóla entrada del diario
+// Mostrar una sóla entrada del diario (HECHO)
 // GET - /entries/:id
 // Público
 app.get("/entries/:id", entryExists, getEntry); // Esto es un endpoint
 
-// Crear una nueva entrada del diario
+// Crear una nueva entrada del diario (HECHO)
 // Post - /entries
 // Sólo usuarios registrados
 app.post("/entries", isUser, newEntry);
 
-// Editar una entrada del diario
+// Editar una entrada del diario (HECHO)
 // PUT - /entries/:id
 // Sólo usuario que creo la entrada o admin
 app.put("/entries/:id", isUser, entryExists, editEntry);
 
-// Borrar una entrada del diario
+// Borrar una entrada del diario (HECHO)
 // DELETE - /entries/:id
 // Sólo usuario que creo la entrada o admin
-app.delete("/entries/:id", entryExists, deleteEntry);
+app.delete("/entries/:id", isUser, entryExists, deleteEntry);
 
-// Votar una entrada
+// Votar una entrada (HECHO)
 // POST - /entries/:id/votes
 // Solo usuarios registrados
-app.post("/entries/:id/votes", entryExists, voteEntry);
+app.post("/entries/:id/votes", isUser, entryExists, voteEntry);
 
 // Ver votos de una entrada
 // GET - /entries/:id/votes
@@ -88,14 +92,16 @@ app.get("/users/validate/:code", validateUser);
 // Público
 app.post("/users/login", loginUser);
 
-// Ver información de un usuario
+// Ver información de un usuario (HECHO)
 // GET - /users/:id
 // Sólo para usuarios registrados
 // Pero si el usuario es el mismo o admin debería mostrar toda la información
+app.get("/users/:id", isUser, getUser);
 
-// Editar datos de usuario
+// Editar datos de usuario: email, name, avatar
 // PUT - /users/:id
 // Sólo el propio usuario o el usuario admin
+app.put("/users/:id", isUser, editUser);
 
 // Editar password de usuario
 // POST - /users/:id/password
@@ -104,6 +110,7 @@ app.post("/users/login", loginUser);
 // Borrar un usuario
 // DELETE - /users/:id
 // Sólo el usuario admin
+app.delete("/users/:id", isUser, isAdmin, deleteUser);
 
 // Middleware finales
 
