@@ -25,6 +25,9 @@ const loginUser = require("./controllers/users/loginUser");
 const getUser = require("./controllers/users/getUser");
 const editUser = require("./controllers/users/editUser");
 const deleteUser = require("./controllers/users/deleteUser");
+const editUserPassword = require("./controllers/users/editUserPassword");
+const recoverUserPassword = require("./controllers/users/recoverUserPassword");
+const resetUserPassword = require("./controllers/users/resetUserPassword");
 
 const app = express();
 
@@ -103,14 +106,25 @@ app.get("/users/:id", isUser, getUser);
 // Sólo el propio usuario o el usuario admin
 app.put("/users/:id", isUser, editUser);
 
-// Editar password de usuario
-// POST - /users/:id/password
-// Sólo el propio usuario o el usuario admin
-
 // Borrar un usuario
 // DELETE - /users/:id
 // Sólo el usuario admin
 app.delete("/users/:id", isUser, isAdmin, deleteUser);
+
+// Editar password de usuario
+// POST - /users/:id/password
+// Sólo el propio usuario o el usuario admin
+app.post("/users/:id/password", isUser, editUserPassword);
+
+// Enviar código de reset de password
+// POST - /users/recover-password
+// Público
+app.post("/users/recover-password", recoverUserPassword);
+
+// Resetear password de usuaro
+// POST - /users/recover-password
+// Público
+app.post("/users/reset-password", resetUserPassword);
 
 // Middleware finales
 

@@ -32,7 +32,9 @@ async function main() {
         image TINYTEXT,
         active BOOLEAN DEFAULT false,
         registrationCode TINYTEXT,
-        lastUpdate DATETIME NOT NULL
+        passwordUpdateCode TINYTEXT,
+        lastUpdate DATETIME NOT NULL,
+        lastAuthUpdate DATETIME NOT NULL DEFAULT NOW()
 
       );
     `);
