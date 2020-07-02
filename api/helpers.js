@@ -68,10 +68,17 @@ async function sendMail({ email, title, content }) {
   await sendgrid.send(message);
 }
 
+function generateError(message, code) {
+  const error = new Error(message);
+  error.httpStatus = code;
+  return error;
+}
+
 module.exports = {
   formatDateToDB,
   processAndSaveImage,
   deleteUpload,
   randomString,
   sendMail,
+  generateError,
 };

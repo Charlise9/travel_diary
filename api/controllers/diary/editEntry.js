@@ -3,13 +3,18 @@ const {
   processAndSaveImage,
   formatDateToDB,
   deleteUpload,
+  generateError,
 } = require("../../helpers");
+
+const { editEntrySchema } = require("../../validators/diaryValidators");
 
 async function editEntry(req, res, next) {
   let connection;
 
   try {
     connection = await getConnection();
+
+    await editEntrySchema.validateAsync(req.body);
 
     // Sacamos los datos
     const { date, description, place } = req.body;
@@ -28,9 +33,7 @@ async function editEntry(req, res, next) {
     const [currentEntry] = current;
 
     if (currentEntry.user_id !== req.auth.id && req.auth.role !== "admin") {
-      const error = new Error("No tienes permisos para editar esta entrada");
-      error.httpStatus = 403;
-      throw error;
+      throw generateError("No tienes permisos para editar esta entrada", 403);
     }
 
     let savedImageFileName;
@@ -41,11 +44,10 @@ async function editEntry(req, res, next) {
         savedImageFileName = await processAndSaveImage(req.files.image);
         if (currentEntry.image) await deleteUpload(currentEntry.image);
       } catch (error) {
-        const imageError = new Error(
-          "No se pudo procesar la imagen. Inténtalo de nuevo"
+        throw generateError(
+          "No se pudo procesar la imagen. Inténtalo de nuevo",
+          400
         );
-        imageError.httpStatus = 400;
-        throw imageError;
       }
     } else {
       savedImageFileName = currentEntry.image;

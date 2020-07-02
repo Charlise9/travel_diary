@@ -1,38 +1,36 @@
 const { getConnection } = require("../../db");
+const { generateError } = require("../../helpers");
 
 async function validateUser(req, res, next) {
   let connection;
-
   try {
     connection = await getConnection();
     const { code } = req.params;
 
     const [result] = await connection.query(
       `
-        SELECT email
-        FROM users
-        WHERE registrationCode=?
-        `,
+      SELECT email
+      FROM users
+      WHERE registrationCode=?
+    `,
       [code]
     );
 
     if (result.length === 0) {
-      const error = new Error(
-        "No hay ningún usuario pendiente de validación con ese código"
+      throw generateError(
+        "No hay ningún usuario pendiente de validación con ese código",
+        404
       );
-      error.httpStatus = 404;
-      throw error;
     }
 
     // Actualizar la tabla de usuarios marcando como activo
     // el usuario que tenga el código de registro recibido
-
     await connection.query(
       `
-        UPDATE users
-        SET active=true, registrationCode=NULL
-        WHERE registrationCode=?
-        `,
+      UPDATE users
+      SET active=true, registrationCode=NULL
+      WHERE registrationCode=?
+    `,
       [code]
     );
 

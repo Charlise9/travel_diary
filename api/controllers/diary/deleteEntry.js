@@ -1,5 +1,5 @@
 const { getConnection } = require("../../db");
-const { deleteUpload } = require("../../helpers");
+const { deleteUpload, generateError } = require("../../helpers");
 
 async function deleteEntry(req, res, next) {
   let connection;
@@ -19,9 +19,7 @@ async function deleteEntry(req, res, next) {
     );
 
     if (current[0].user_id !== req.auth.id && req.auth.role !== "admin") {
-      const error = new Error("No tienes permisos para editar esta entrada");
-      error.httpStatus = 403;
-      throw error;
+      throw generateError("No tienes permisos para borrar esta entrada", 403);
     }
 
     // Si la entrada tiene imagen asociada borrarla
