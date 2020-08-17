@@ -45,7 +45,7 @@ async function voteEntry(req, res, next) {
     await connection.query(
       `
       INSERT INTO diary_votes(entry_id, vote, date, user_id, lastUpdate)
-      VALUES(?, ?, UTC_TIMESTAMP(), ?, UTC_TIMESTAMP())
+      VALUES(?, ?, UTC_TIMESTAMP, ?, UTC_TIMESTAMP)
     `,
       [id, vote, req.auth.id]
     );

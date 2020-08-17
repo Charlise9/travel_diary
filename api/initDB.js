@@ -34,7 +34,7 @@ async function main() {
         registrationCode TINYTEXT,
         passwordUpdateCode TINYTEXT,
         lastUpdate DATETIME NOT NULL,
-        lastAuthUpdate DATETIME NOT NULL DEFAULT NOW()
+        lastAuthUpdate DATETIME NOT NULL
 
       );
     `);
@@ -69,8 +69,8 @@ async function main() {
 
     await connection.query(
       `
-      INSERT INTO users(registrationDate, email, password, role, name, active, lastUpdate)
-      VALUES(NOW(), "carlosbarrientosguillen@gmail.com", SHA2("${process.env.DEFAULT_ADMIN_PASSWORD}", 512), "admin", "Carlos Barrientos", true, NOW())
+      INSERT INTO users(registrationDate, email, password, role, name, active, lastUpdate, lastAuthUpdate)
+      VALUES(UTC_TIMESTAMP, "carlosbarrientosguillen@gmail.com", SHA2("${process.env.DEFAULT_ADMIN_PASSWORD}", 512), "admin", "Carlos Barrientos", true, UTC_TIMESTAMP, UTC_TIMESTAMP)
     `
     );
 
@@ -83,8 +83,8 @@ async function main() {
 
       await connection.query(
         `
-        INSERT INTO users(registrationDate, email, password, role, name, lastUpdate)
-        VALUES(NOW(), "${email}", SHA2("${faker.internet.password()}", 512), "normal", "${name}", NOW())
+        INSERT INTO users(registrationDate, email, password, role, name, lastUpdate, lastAuthUpdate)
+        VALUES(UTC_TIMESTAMP, "${email}", SHA2("${faker.internet.password()}", 512), "normal", "${name}", UTC_TIMESTAMP, UTC_TIMESTAMP)
       `
       );
     }
@@ -98,7 +98,7 @@ async function main() {
 
       await connection.query(`
         INSERT INTO diary(date, description, place, lastUpdate, user_id)
-        VALUES("${date}", "${faker.lorem.paragraph()}", "${faker.address.city()}", NOW(), "${random(
+        VALUES("${date}", "${faker.lorem.paragraph()}", "${faker.address.city()}", UTC_TIMESTAMP, "${random(
         2,
         users + 1
       )}")
@@ -118,7 +118,7 @@ async function main() {
       "${random(1, 5)}",
       "${date}",
       "${random(2, users + 1)}",
-       NOW())
+       UTC_TIMESTAMP)
       `);
     }
   } catch (error) {

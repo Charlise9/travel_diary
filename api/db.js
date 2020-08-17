@@ -14,7 +14,7 @@ async function getConnection() {
       user: MYSQL_USER,
       password: MYSQL_PASSWORD,
       database: MYSQL_DATABASE,
-      timezone: "Z",
+      timezone: "+00:00",
     });
   }
   return await pool.getConnection();

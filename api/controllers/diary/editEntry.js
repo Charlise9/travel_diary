@@ -56,7 +56,7 @@ async function editEntry(req, res, next) {
     // Ejecutar la query de edición de la entrada
     await connection.query(
       `
-      UPDATE diary SET date=?, place=?, description=?, image=?, lastUpdate=NOW()
+      UPDATE diary SET date=?, place=?, description=?, image=?, lastUpdate=UTC_TIMESTAMP
       WHERE id=?
     `,
       [formatDateToDB(date), place, description, savedImageFileName, id]

@@ -49,7 +49,7 @@ async function newEntry(req, res, next) {
     const [result] = await connection.query(
       `
       INSERT INTO diary(date, place, description, image, lastUpdate, user_id)
-      VALUES(UTC_TIMESTAMP(),?,?,?,UTC_TIMESTAMP(), ?)
+      VALUES(UTC_TIMESTAMP,?,?,?,UTC_TIMESTAMP, ?)
       `,
       [place, description, savedImageFileName, req.auth.id]
     );

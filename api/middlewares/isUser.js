@@ -42,7 +42,7 @@ async function isUser(req, res, next) {
       throw error;
     }
 
-    const tokenCreatedAt = new Date((tokenInfo.iat + 7200) * 1000);
+    const tokenCreatedAt = new Date(tokenInfo.iat /* + 7200 */ * 1000);
     const userLastAuthUpdate = new Date(result[0].lastAuthUpdate);
 
     console.log(tokenCreatedAt, userLastAuthUpdate);

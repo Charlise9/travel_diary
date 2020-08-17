@@ -33,7 +33,10 @@ const app = express();
 
 // Middlewares iniciales
 // Log de peticiones a la consola
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
 // Procesado de body tipo json
 app.use(bodyParser.json());
 // Procesado de body tipo form-data

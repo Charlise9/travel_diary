@@ -20,7 +20,8 @@ async function entryExists(req, res, next) {
 
     if (current.length === 0) {
       throw generateError(
-        `La entrada con id ${id} no existe en la base de datos`. 404
+        `La entrada con id ${id} no existe en la base de datos`,
+        404
       );
     } else {
       next();
